@@ -14,3 +14,8 @@ data
 *.tfstate.*
 terraform.tfvars
 crash.log
+.venv/
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
+logs/

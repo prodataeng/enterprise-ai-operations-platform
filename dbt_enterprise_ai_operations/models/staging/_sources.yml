@@ -1,0 +1,20 @@
+version: 2
+
+sources:
+  - name: retail_ai_raw
+    description: Raw source-system data generated for the Enterprise AI Operations Platform.
+    database: diesel-command-483009-r5
+    schema: retail_ai_raw
+
+    tables:
+      - name: customers
+      - name: products
+      - name: stores
+      - name: warehouses
+      - name: orders
+      - name: order_items
+      - name: payments
+      - name: shipments
+      - name: inventory_snapshots
+      - name: pipeline_runs
+      - name: incidents
