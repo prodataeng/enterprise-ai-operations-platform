@@ -1,0 +1,183 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: Customer dimension with one row per customer.
+    columns:
+      - name: customer_id
+        data_tests: [unique, not_null]
+
+  - name: dim_products
+    description: Product dimension with one row per product.
+    columns:
+      - name: product_id
+        data_tests: [unique, not_null]
+
+  - name: dim_warehouses
+    description: Warehouse dimension with one row per warehouse.
+    columns:
+      - name: warehouse_id
+        data_tests: [unique, not_null]
+
+  - name: dim_date
+    description: Calendar date dimension.
+    columns:
+      - name: date_key
+        data_tests: [unique, not_null]
+
+  - name: fct_orders
+    description: Order fact table at one row per order.
+    columns:
+      - name: order_id
+        data_tests: [unique, not_null]
+      - name: customer_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_id
+      - name: date_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+
+  - name: fct_order_items
+    description: Order-item fact table at one row per order line.
+    columns:
+      - name: order_item_id
+        data_tests: [unique, not_null]
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_orders')
+                field: order_id
+      - name: product_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_id
+      - name: date_key
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+
+  - name: fct_shipments
+    description: Shipment fact table at one row per shipment.
+    columns:
+      - name: shipment_id
+        data_tests: [unique, not_null]
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_orders')
+                field: order_id
+      - name: warehouse_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_warehouses')
+                field: warehouse_id
+
+  - name: fct_payments
+    description: Payment fact table at one row per payment transaction.
+    columns:
+      - name: payment_id
+        data_tests: [unique, not_null]
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_orders')
+                field: order_id
+
+  - name: fct_inventory_snapshots
+    description: Inventory snapshot fact at warehouse-product-date grain.
+    columns:
+      - name: date_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+      - name: warehouse_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_warehouses')
+                field: warehouse_id
+      - name: product_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_id
+
+  - name: fct_pipeline_runs
+    description: Pipeline execution fact table at one row per pipeline run.
+    columns:
+      - name: pipeline_run_id
+        data_tests: [unique, not_null]
+      - name: date_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+
+  - name: fct_incidents
+    description: Operational incident fact table at one row per incident.
+    columns:
+      - name: incident_id
+        data_tests: [unique, not_null]
+
+  - name: mart_daily_revenue
+    description: Daily country-channel revenue dataset for forecasting and anomaly detection.
+    columns:
+      - name: date_key
+        data_tests: [not_null]
+      - name: country_code
+        data_tests: [not_null]
+
+  - name: mart_delivery_features
+    description: Shipment-level feature table for delivery-delay classification.
+    columns:
+      - name: shipment_id
+        data_tests: [unique, not_null]
+      - name: target_is_delayed
+        data_tests: [not_null]
+
+  - name: mart_inventory_health
+    description: Warehouse-product-date inventory health dataset.
+    columns:
+      - name: date_key
+        data_tests: [not_null]
+      - name: warehouse_id
+        data_tests: [not_null]
+      - name: product_id
+        data_tests: [not_null]
+
+  - name: mart_pipeline_health
+    description: Daily pipeline-health dataset for operational monitoring and AI investigation.
+    columns:
+      - name: date_key
+        data_tests: [not_null]
+      - name: pipeline_name
+        data_tests: [not_null]

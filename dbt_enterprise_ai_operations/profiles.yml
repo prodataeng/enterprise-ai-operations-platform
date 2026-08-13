@@ -1,0 +1,20 @@
+enterprise_ai_operations:
+  target: dev
+
+  outputs:
+
+    dev:
+      type: bigquery
+      method: oauth
+      project: diesel-command-483009-r5
+      dataset: retail_ai_dev
+      location: europe-north2
+      threads: 4
+
+    prod:
+      type: bigquery
+      method: oauth
+      project: diesel-command-483009-r5
+      dataset: retail_ai
+      location: europe-north2
+      threads: 4

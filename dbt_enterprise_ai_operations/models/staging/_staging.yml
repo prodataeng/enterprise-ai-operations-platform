@@ -1,0 +1,159 @@
+version: 2
+
+models:
+  - name: stg_customers
+    columns:
+      - name: customer_id
+        data_tests: [unique, not_null]
+      - name: country_code
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['SE', 'NO', 'DK', 'FI', 'DE']
+
+  - name: stg_products
+    columns:
+      - name: product_id
+        data_tests: [unique, not_null]
+      - name: sku
+        data_tests: [unique, not_null]
+
+  - name: stg_stores
+    columns:
+      - name: store_id
+        data_tests: [unique, not_null]
+
+  - name: stg_warehouses
+    columns:
+      - name: warehouse_id
+        data_tests: [unique, not_null]
+
+  - name: stg_orders
+    columns:
+      - name: order_id
+        data_tests: [unique, not_null]
+      - name: customer_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id
+      - name: country_code
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['SE', 'NO', 'DK', 'FI', 'DE']
+      - name: sales_channel
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['web', 'mobile_app']
+      - name: order_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['completed', 'cancelled']
+
+  - name: stg_order_items
+    columns:
+      - name: order_item_id
+        data_tests: [unique, not_null]
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+      - name: product_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_products')
+                field: product_id
+
+  - name: stg_payments
+    columns:
+      - name: payment_id
+        data_tests: [unique, not_null]
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+      - name: payment_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['captured', 'refunded', 'pending']
+
+  - name: stg_shipments
+    columns:
+      - name: shipment_id
+        data_tests: [unique, not_null]
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+      - name: warehouse_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_warehouses')
+                field: warehouse_id
+      - name: delivery_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['on_time', 'delayed']
+
+  - name: stg_inventory_snapshots
+    columns:
+      - name: snapshot_date
+        data_tests: [not_null]
+      - name: warehouse_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_warehouses')
+                field: warehouse_id
+      - name: product_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_products')
+                field: product_id
+
+  - name: stg_pipeline_runs
+    columns:
+      - name: pipeline_run_id
+        data_tests: [unique, not_null]
+      - name: pipeline_name
+        data_tests: [not_null]
+      - name: status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['success', 'failed', 'partial_success']
+
+  - name: stg_incidents
+    columns:
+      - name: incident_id
+        data_tests: [unique, not_null]
+      - name: severity
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['medium', 'high', 'critical']
