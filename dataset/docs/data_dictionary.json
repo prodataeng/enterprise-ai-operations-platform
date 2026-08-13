@@ -1,0 +1,74 @@
+{
+  "customers.csv": {
+    "grain": "one row per customer",
+    "pk": "customer_id"
+  },
+  "products.csv": {
+    "grain": "one row per product",
+    "pk": "product_id"
+  },
+  "orders.csv": {
+    "grain": "one row per order",
+    "pk": "order_id",
+    "fk": [
+      "customer_id"
+    ],
+    "use_cases": [
+      "revenue",
+      "forecasting",
+      "anomaly detection",
+      "freshness incidents"
+    ]
+  },
+  "order_items.csv": {
+    "grain": "one row per order-product line",
+    "pk": "order_item_id",
+    "fk": [
+      "order_id",
+      "product_id"
+    ]
+  },
+  "payments.csv": {
+    "grain": "one row per payment",
+    "pk": "payment_id",
+    "fk": [
+      "order_id"
+    ]
+  },
+  "shipments.csv": {
+    "grain": "one row per shipment",
+    "pk": "shipment_id",
+    "fk": [
+      "order_id",
+      "warehouse_id"
+    ],
+    "use_cases": [
+      "delay prediction",
+      "carrier analysis"
+    ]
+  },
+  "inventory_snapshots.csv": {
+    "grain": "one row per product/warehouse/snapshot",
+    "pk": [
+      "snapshot_date",
+      "warehouse_id",
+      "product_id"
+    ]
+  },
+  "pipeline_runs.csv": {
+    "grain": "one row per pipeline/day",
+    "pk": "pipeline_run_id",
+    "use_cases": [
+      "root cause analysis",
+      "agent investigation"
+    ]
+  },
+  "incidents.csv": {
+    "grain": "one row per incident",
+    "pk": "incident_id",
+    "use_cases": [
+      "RAG",
+      "incident matching"
+    ]
+  }
+}

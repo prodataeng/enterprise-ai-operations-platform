@@ -1,0 +1,67 @@
+[
+  {
+    "name": "order_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "customer_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "order_timestamp",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "source_available_timestamp",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "country_code",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "sales_channel",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "order_status",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "item_quantity",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "gross_revenue_sek",
+    "type": "NUMERIC",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "discount_amount_sek",
+    "type": "NUMERIC",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "net_revenue_sek",
+    "type": "NUMERIC",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "vat_amount_sek",
+    "type": "NUMERIC",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "estimated_cost_sek",
+    "type": "NUMERIC",
+    "mode": "REQUIRED"
+  }
+]

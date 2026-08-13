@@ -1,0 +1,47 @@
+[
+  {
+    "name": "pipeline_run_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "pipeline_name",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "business_date",
+    "type": "DATE",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "scheduled_start_timestamp",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "actual_start_timestamp",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "completed_timestamp",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "duration_minutes",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "status",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "error_message",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  }
+]

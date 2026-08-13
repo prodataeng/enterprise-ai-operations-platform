@@ -1,0 +1,47 @@
+[
+  {
+    "name": "shipment_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "order_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "warehouse_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "carrier",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "shipped_timestamp",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "promised_delivery_timestamp",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "delivered_timestamp",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "delay_hours",
+    "type": "FLOAT",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "delivery_status",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  }
+]

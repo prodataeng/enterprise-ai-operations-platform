@@ -1,0 +1,22 @@
+[
+  {
+    "name": "store_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "store_name",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "city",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "country_code",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  }
+]

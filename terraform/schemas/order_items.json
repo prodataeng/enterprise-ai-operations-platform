@@ -1,0 +1,47 @@
+[
+  {
+    "name": "order_item_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "order_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "product_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "quantity",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "unit_price_sek",
+    "type": "NUMERIC",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "discount_pct",
+    "type": "NUMERIC",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "gross_line_amount_sek",
+    "type": "NUMERIC",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "discount_amount_sek",
+    "type": "NUMERIC",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "net_line_amount_sek",
+    "type": "NUMERIC",
+    "mode": "REQUIRED"
+  }
+]
