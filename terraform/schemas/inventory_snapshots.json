@@ -1,0 +1,37 @@
+[
+  {
+    "name": "snapshot_date",
+    "type": "DATE",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "warehouse_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "product_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "on_hand_quantity",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "reorder_point",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "below_reorder_point",
+    "type": "BOOLEAN",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "recommended_reorder_quantity",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  }
+]

@@ -8,3 +8,9 @@ __pycache__/
 terraform.tfstate*
 *.zip
 data
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+crash.log
