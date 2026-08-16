@@ -19,3 +19,5 @@ dbt/target/
 dbt/logs/
 dbt/dbt_packages/
 logs/
+*.DS_Store
+enterprise_ai_retail_dataset/rag_index.json
