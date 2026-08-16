@@ -97,19 +97,97 @@ payments=pd.DataFrame({'payment_id':[f'PAY{i:09d}' for i in range(1,N+1)],'order
 payments.to_csv(base/'data/payments.csv',index=False)
 
 # shipments
+# shipments
 comp=np.where(status=='completed')[0]; S=len(comp)
 ships_order_ts=pd.to_datetime(order_ts[comp]); ships_cc=order_cc[comp]
-wh=np.random.choice(['WH-SE-01','WH-DE-01','WH-DK-01'],S,p=[.52,.32,.16]); carrier=np.random.choice(['DHL','PostNord','Bring','DB Schenker','Budbee'],S,p=[.26,.28,.15,.17,.14])
-shipped=ships_order_ts+pd.to_timedelta(np.random.randint(8,36,S),unit='h')
+ships_qty=agg.qty.values[comp]; ships_value=agg.net.values[comp]
+
+wh=np.random.choice(['WH-SE-01','WH-DE-01','WH-DK-01'],S,p=[.52,.32,.16])
+carrier=np.random.choice(['DHL','PostNord','Bring','DB Schenker','Budbee'],S,p=[.26,.28,.15,.17,.14])
+
+dispatch_h=np.random.randint(8,36,S)+np.where(wh=='WH-DK-01',5,0)+np.where(ships_qty>=3,5,0)
+shipped=ships_order_ts+pd.to_timedelta(dispatch_h,unit='h')
+
 promise_days=pd.Series({'SE':2,'NO':3,'DK':2,'FI':3,'DE':2})[ships_cc].values
 promised=ships_order_ts+pd.to_timedelta(promise_days,unit='D')
-delay=np.maximum(0,np.random.normal(0,10,S).astype(int)); bf=(ships_order_ts.month==11)&(ships_order_ts.day>=20)&(ships_order_ts.day<=30); delay[bf]+=np.random.randint(0,24,bf.sum())
-delivered=promised+pd.to_timedelta(delay-6,unit='h'); min_deliv=shipped+pd.to_timedelta(12,unit='h'); delivered=pd.Series(np.maximum(delivered.values,min_deliv.values))
-dh=np.maximum(0,(pd.to_datetime(delivered)-promised).dt.total_seconds()/3600)
-post=(ships_order_ts.date>=pd.Timestamp('2026-01-12').date())&(ships_order_ts.date<=pd.Timestamp('2026-01-15').date())&(carrier=='PostNord'); dh=np.asarray(dh); dh[post]+=24; delivered.loc[post]=pd.to_datetime(delivered.loc[post])+pd.to_timedelta(24,unit='h')
-shipments=pd.DataFrame({'shipment_id':[f'SHP{i:09d}' for i in range(1,S+1)],'order_id':order_ids[comp],'warehouse_id':wh,'carrier':carrier,'shipped_timestamp':shipped,'promised_delivery_timestamp':promised,'delivered_timestamp':delivered.values,'delay_hours':np.round(dh,1),'delivery_status':np.where(dh>6,'delayed','on_time')})
-shipments.to_csv(base/'data/shipments.csv',index=False)
 
+# delay probability
+p=np.full(S,.06)
+
+p+=np.select(
+    [carrier=='PostNord',carrier=='Bring',carrier=='DB Schenker',carrier=='Budbee'],
+    [.14,.09,.07,.04],
+    default=.01
+)
+
+p+=np.select(
+    [ships_cc=='NO',ships_cc=='FI',ships_cc=='DK',ships_cc=='DE'],
+    [.11,.10,.05,.03],
+    default=0
+)
+
+p+=np.where(wh=='WH-DK-01',.10,np.where(wh=='WH-DE-01',.04,0))
+
+ship_dow=pd.Series(shipped).dt.dayofweek.values
+ship_hour=pd.Series(shipped).dt.hour.values
+
+p+=np.where(ship_dow>=5,.10,0)
+p+=np.where(ship_hour>=18,.08,0)
+p+=np.where(ships_qty>=3,.12,0)
+p+=np.where(ships_value>=2500,.06,0)
+
+bf=(ships_order_ts.month==11)&(ships_order_ts.day>=20)&(ships_order_ts.day<=30)
+
+post=(
+    (ships_order_ts.date>=pd.Timestamp('2026-01-12').date())
+    &(ships_order_ts.date<=pd.Timestamp('2026-01-15').date())
+    &(carrier=='PostNord')
+)
+
+p+=np.where(bf,.25,0)
+p+=np.where(post,.50,0)
+
+p=np.clip(p,.02,.85)
+is_delayed=np.random.random(S)<p
+
+# delay hours
+delay_h=np.zeros(S)
+delay_h[is_delayed]=np.random.gamma(2.2,6,is_delayed.sum())+7
+delay_h[post]+=np.random.uniform(18,30,post.sum())
+delay_h[bf & is_delayed]+=np.random.uniform(3,12,(bf & is_delayed).sum())
+
+# delivered timestamp
+early_h=np.random.uniform(1,12,S)
+
+delivered=np.where(
+    is_delayed,
+    pd.to_datetime(promised)+pd.to_timedelta(delay_h,unit='h'),
+    pd.to_datetime(promised)-pd.to_timedelta(early_h,unit='h')
+)
+
+delivered=pd.Series(pd.to_datetime(delivered))
+min_delivery=pd.Series(shipped)+pd.to_timedelta(12,unit='h')
+delivered=pd.Series(np.maximum(delivered.values,pd.to_datetime(min_delivery).values))
+
+dh=np.maximum(
+    0,
+    (pd.to_datetime(delivered)-pd.to_datetime(promised))
+    .dt.total_seconds()/3600
+)
+
+shipments=pd.DataFrame({
+    'shipment_id':[f'SHP{i:09d}' for i in range(1,S+1)],
+    'order_id':order_ids[comp],
+    'warehouse_id':wh,
+    'carrier':carrier,
+    'shipped_timestamp':shipped,
+    'promised_delivery_timestamp':promised,
+    'delivered_timestamp':delivered.values,
+    'delay_hours':np.round(dh,1),
+    'delivery_status':np.where(dh>6,'delayed','on_time')
+})
+
+shipments.to_csv(base/'data/shipments.csv',index=False)
 # inventory snapshots
 inv=[]
 for sd in pd.date_range(start,end,freq='14D'):
