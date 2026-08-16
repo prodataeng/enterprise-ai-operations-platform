@@ -11,11 +11,7 @@ with shipments as (
         carrier,
         shipped_timestamp,
         promised_delivery_timestamp,
-        delivered_timestamp,
-        delay_hours,
-        delivery_status,
-        is_delayed,
-        transit_hours
+        is_delayed
     from {{ ref('fct_shipments') }}
 
 ),
@@ -33,14 +29,17 @@ orders as (
 )
 
 select
+    -- identifiers: useful for tracing predictions,
+    -- but we will NOT use them as ML features
     s.shipment_id,
     s.order_id,
-    s.customer_id,
+
+    -- features available before delivery
     s.warehouse_id,
-    s.date_key,
     s.country_code,
     s.sales_channel,
     s.carrier,
+    s.date_key,
 
     extract(dayofweek from s.shipped_timestamp) as shipped_day_of_week,
     extract(hour from s.shipped_timestamp) as shipped_hour,
@@ -57,10 +56,14 @@ select
         hour
     ) as promised_transit_hours,
 
-    s.transit_hours,
-    s.delay_hours,
+    -- label
     s.is_delayed as target_is_delayed
 
 from shipments as s
+
 left join orders as o
     on s.order_id = o.order_id
+
+where s.shipped_timestamp is not null
+  and s.promised_delivery_timestamp is not null
+  and s.is_delayed is not null
