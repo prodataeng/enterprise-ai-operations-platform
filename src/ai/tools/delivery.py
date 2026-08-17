@@ -119,7 +119,74 @@ def get_high_risk_shipments(
             for row in rows
         ],
     }
+SHIPMENTS_TABLE = (
+    f"{PROJECT_ID}.retail_ai_dev_marts.fct_shipments"
+)
 
+
+def get_delivery_outcomes(
+    country_code: str,
+    start_date: str,
+    end_date: str,
+    limit: int = 50,
+) -> dict:
+    """Get actual delivery outcomes for a country and date range."""
+
+    query = f"""
+        SELECT
+            shipment_id,
+            order_id,
+            date_key,
+            country_code,
+            carrier,
+            delivery_status,
+            is_delayed,
+            delay_hours,
+            transit_hours
+        FROM `{SHIPMENTS_TABLE}`
+        WHERE country_code = @country_code
+          AND date_key BETWEEN @start_date AND @end_date
+        ORDER BY delay_hours DESC
+        LIMIT @limit
+    """
+
+    config = bigquery.QueryJobConfig(
+        query_parameters=[
+            bigquery.ScalarQueryParameter(
+                "country_code", "STRING", country_code.upper()
+            ),
+            bigquery.ScalarQueryParameter(
+                "start_date", "DATE", start_date
+            ),
+            bigquery.ScalarQueryParameter(
+                "end_date", "DATE", end_date
+            ),
+            bigquery.ScalarQueryParameter(
+                "limit", "INT64", limit
+            ),
+        ]
+    )
+
+    rows = client.query(query, job_config=config).result()
+
+    return {
+        "country_code": country_code.upper(),
+        "start_date": start_date,
+        "end_date": end_date,
+        "shipments": [
+            {
+                "shipment_id": r.shipment_id,
+                "order_id": r.order_id,
+                "date": str(r.date_key),
+                "carrier": r.carrier,
+                "delivery_status": r.delivery_status,
+                "is_delayed": bool(r.is_delayed),
+                "delay_hours": float(r.delay_hours),
+                "transit_hours": r.transit_hours,
+            }
+            for r in rows
+        ],
+    }
 if __name__ == "__main__":
     print(
     get_high_risk_shipments(
