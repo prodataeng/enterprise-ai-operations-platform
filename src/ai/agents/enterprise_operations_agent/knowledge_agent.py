@@ -1,19 +1,17 @@
 from google.adk.agents import LlmAgent
 
+from .mcp_config import knowledge_tools
+
+
 knowledge_agent = LlmAgent(
     name="knowledge_agent",
     model="gemini-2.5-flash",
     description="Searches enterprise documentation and runbooks.",
     instruction="""
-            You are the enterprise knowledge specialist.
+You are the enterprise knowledge specialist.
 
-            Use documentation and knowledge search for:
-            - runbooks
-            - metric definitions
-            - architecture
-            - security policies
-            - data documentation
-
-            Return only information supported by retrieved documents.
-    """,
+Use knowledge_search for runbooks, definitions,
+architecture, security policies, and documentation.
+""",
+    tools=[knowledge_tools],
 )

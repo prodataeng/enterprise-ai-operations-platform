@@ -1,4 +1,4 @@
-from mcp.server import MCPServer
+from mcp.server.fastmcp import FastMCP
 
 from src.ai.tools.bigquery import query_bigquery
 from src.ai.tools.schema import get_bigquery_schema
@@ -12,7 +12,7 @@ from src.ai.tools.delivery import (
     get_delivery_outcomes,
 )
 
-mcp = MCPServer("enterprise-ai-operations")
+mcp = FastMCP("enterprise-ai-operations")
 
 
 @mcp.tool()
