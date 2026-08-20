@@ -22,3 +22,7 @@ logs/
 *.DS_Store
 enterprise_ai_retail_dataset/rag_index.json
 *.egg-info/
+frontend/node_modules/
+frontend/.next/
+evaluation/results.json
+evaluation/observability.jsonl

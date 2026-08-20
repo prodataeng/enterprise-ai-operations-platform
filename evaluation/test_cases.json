@@ -1,0 +1,50 @@
+[
+  {
+    "id": "revenue_001",
+    "question": "Which country generated the most revenue in July 2026?",
+    "expected_agent": "analytics_agent",
+    "expected_tools": ["bigquery_query"],
+    "must_include": ["SE"]
+  },
+  {
+    "id": "anomaly_001",
+    "question": "What were the strongest revenue anomalies in Sweden?",
+    "expected_agent": "analytics_agent",
+    "expected_tools": ["revenue_anomalies"],
+    "must_include": [
+      "anomaly"
+    ]
+  },
+  {
+    "id": "delivery_001",
+    "question": "Which shipments had the highest delay risk in Sweden between July 25 and July 31 2026?",
+    "expected_agent": "operations_agent",
+    "expected_tools": ["delivery_risk"],
+    "must_include": [
+      "Shipment ID",
+      "Delay Probability"
+    ]
+  },
+  {
+    "id": "knowledge_001",
+    "question": "How should a revenue drop be investigated?",
+    "expected_agent": "knowledge_agent",
+    "expected_tools": ["knowledge_search"],
+    "must_include": ["data freshness"]
+  },
+  {
+    "id": "rca_001",
+    "question": "Investigate why Sweden revenue was lower on July 27 and July 29 2026.",
+    "expected_agents": [
+      "analytics_agent",
+      "operations_agent",
+      "knowledge_agent"
+    ],
+    "must_include_sections": [
+      "confirmed facts",
+      "possible contributors",
+      "gaps",
+      "recommended next actions"
+    ]
+  }
+]

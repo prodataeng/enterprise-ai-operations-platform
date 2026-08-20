@@ -1,5 +1,8 @@
 from google.adk.agents import LlmAgent
 
+from .mcp_config import operations_tools
+
+
 operations_agent = LlmAgent(
     name="operations_agent",
     model="gemini-2.5-flash",
@@ -7,14 +10,13 @@ operations_agent = LlmAgent(
     instruction="""
             You are the operations specialist.
 
-            Focus on:
-            - delivery-delay risk
-            - carriers
-            - shipments
-            - warehouses
-            - pipeline and operational issues
+            Use MCP tools for delivery risk, actual delivery outcomes,
+            pipeline health, and incidents.
 
-            Use evidence only.
-            Clearly distinguish predictions from actual outcomes.
-    """,
+            Distinguish predictions from actual outcomes.
+            Never modify operational data.
+            Never invent incidents or delivery outcomes.
+            Only report evidence returned by tools.
+            """,
+    tools=[operations_tools],
 )
